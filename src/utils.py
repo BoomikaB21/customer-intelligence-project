@@ -1,7 +1,29 @@
 import pandas as pd
+import os
+from pathlib import Path
 
 
-def load_data(path):
+def load_data(path=None):
+    # If no path provided, try to find retail.csv relative to this file
+    if path is None:
+        # Get the directory where this file is located
+        current_dir = Path(__file__).parent
+        # Try multiple possible locations
+        possible_paths = [
+            current_dir.parent / "data" / "retail.csv",  # ../data/retail.csv
+            Path.cwd() / "data" / "retail.csv",  # ./data/retail.csv
+            Path.cwd() / "customer_project" / "data" / "retail.csv",  # ./customer_project/data/retail.csv
+        ]
+        
+        path = None
+        for p in possible_paths:
+            if p.exists():
+                path = str(p)
+                break
+        
+        if path is None:
+            raise FileNotFoundError(f"retail.csv not found in expected locations: {[str(p) for p in possible_paths]}")
+    
     df = pd.read_csv(path, encoding='ISO-8859-1')
     df.dropna(subset=['CustomerID'], inplace=True)
     df['InvoiceDate'] = pd.to_datetime(df['InvoiceDate'])
