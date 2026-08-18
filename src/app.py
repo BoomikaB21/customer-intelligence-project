@@ -191,10 +191,8 @@ if st.button("Logout"):
 
 start_live_stream()
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-data_path = os.path.join(BASE_DIR, "..", "data", "retail.csv")
-
-df = load_data(data_path)
+# Load data with automatic path resolution
+df = load_data()
 rfm = compute_rfm(df)
 model = train_model(rfm)
 
